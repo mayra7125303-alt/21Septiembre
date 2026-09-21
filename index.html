@@ -1,0 +1,540 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flores Amarillas para Franco</title>
+    <style>
+        :root {
+            --bg-color: #fffde7;
+            --card-bg: #ffffff;
+            --text-color: #4a3b32;
+            --yellow-main: #fbc02d;
+            --yellow-light: #fff59d;
+            --red-heart: #e53935;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(180deg, #fffde7 0%, #fff9c4 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* --- CONTENEDOR PARA LLUVIA DE FLORES Y CORAZONES --- */
+        #lluvia-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .elemento-caida {
+            position: absolute;
+            top: -50px;
+            user-select: none;
+            animation: caida linear infinite;
+        }
+
+        @keyframes caida {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(105vh) rotate(360deg);
+                opacity: 0.2;
+            }
+        }
+
+        .tarjeta {
+            background: var(--card-bg);
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(251, 192, 45, 0.25);
+            padding: 30px 20px;
+            margin: 25px 15px;
+            max-width: 480px;
+            text-align: center;
+            z-index: 10;
+            border: 3px solid var(--yellow-main);
+            position: relative;
+        }
+
+        .top-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        h1 {
+            color: #d81b60;
+            font-size: 1.9rem;
+            margin: 10px 0;
+        }
+
+        .subtitulo {
+            font-weight: bold;
+            color: #f57f17;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+        }
+
+        .mensaje-principal {
+            font-size: 1rem;
+            line-height: 1.7;
+            text-align: justify;
+            margin-bottom: 20px;
+        }
+
+        .jardin-titulo {
+            font-weight: bold;
+            color: #d81b60;
+            margin: 20px 0 15px 0;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .botones-flores {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .btn-flor {
+            background-color: var(--yellow-light);
+            border: 2px solid var(--yellow-main);
+            border-radius: 50px;
+            padding: 10px 16px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-flor:active {
+            transform: scale(0.95);
+        }
+
+        .caja-revelada {
+            background-color: #fffde7;
+            border-left: 4px solid var(--yellow-main);
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            text-align: center;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        /* --- REPRODUCTOR PERSONALIZADO PARA MÓVIL --- */
+        .reproductor-box {
+            background: #fff8e1;
+            border-radius: 20px;
+            padding: 18px;
+            border: 2px solid var(--yellow-main);
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reproductor-box p {
+            margin: 0;
+            font-weight: bold;
+            font-size: 0.95rem;
+            color: #f57f17;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-play {
+            background: #fbc02d;
+            color: #4a3b32;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(245, 127, 23, 0.25);
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn-play:active {
+            transform: scale(0.95);
+            background: #f57f17;
+            color: white;
+        }
+
+        .estado-musica {
+            font-size: 0.8rem;
+            color: #757575;
+            font-style: italic;
+        }
+
+        .btn-ramo {
+            background: linear-gradient(135deg, #fbc02d, #f57f17);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            font-size: 1.05rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(245, 127, 23, 0.3);
+            margin-top: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .svg-icon {
+            width: 22px;
+            height: 22px;
+            vertical-align: middle;
+        }
+
+        .svg-icon-lg {
+            width: 50px;
+            height: 50px;
+        }
+
+        /* --- VENTANA EMERGENTE (RAMO DE FLORES) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: #ffffff;
+            border-radius: 25px;
+            padding: 30px 20px;
+            max-width: 320px;
+            width: 85%;
+            text-align: center;
+            border: 4px solid var(--yellow-main);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            animation: popup 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ramo-svg {
+            width: 100px;
+            height: 100px;
+            animation: bounce 1.5s infinite alternate ease-in-out;
+        }
+
+        .modal-content h2 {
+            color: #d81b60;
+            margin: 15px 0 10px 0;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .modal-content p {
+            font-size: 0.95rem;
+            color: var(--text-color);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .btn-cerrar {
+            background: #e53935;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(229, 57, 53, 0.3);
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .btn-cerrar:active {
+            transform: scale(0.95);
+            background: #c62828;
+        }
+
+        /* --- ANIMACIÓN GUARDAR EN EL CORAZÓN --- */
+        .animacion-guardar {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .corazon-gigante {
+            width: 80px;
+            height: 80px;
+            animation: latidoGuardar 0.8s infinite alternate ease-in-out;
+        }
+
+        .texto-guardando {
+            color: #d81b60;
+            font-weight: bold;
+            font-size: 1.05rem;
+        }
+
+        @keyframes latidoGuardar {
+            0% { transform: scale(0.9); }
+            100% { transform: scale(1.15); }
+        }
+
+        @keyframes popup {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-10px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CAPA PARA LA LLUVIA DE FLORES Y CORAZONES -->
+    <div id="lluvia-container"></div>
+
+    <div class="tarjeta">
+        <div class="top-icon">
+            <svg class="svg-icon-lg" viewBox="0 0 24 24" fill="#fbc02d"><path d="M12,2A3,3 0 0,1 15,5A3,3 0 0,1 14.9,5.8C15.8,5.3 16.9,5 18,5A3,3 0 0,1 21,8A3,3 0 0,1 20.2,8.9C20.7,9.8 21,10.9 21,12A3,3 0 0,1 18,15A3,3 0 0,1 17.1,14.9C17.6,15.8 17.9,16.9 17.9,18A3,3 0 0,1 14.9,21A3,3 0 0,1 14,20.2C13.1,20.7 12,21 10.9,21A3,3 0 0,1 7.9,18A3,3 0 0,1 8,17.1C7.1,17.6 6,17.9 4.9,17.9A3,3 0 0,1 1.9,14.9A3,3 0 0,1 2.7,14C2.2,13.1 1.9,12 1.9,10.9A3,3 0 0,1 4.9,7.9A3,3 0 0,1 5.8,8C5.3,7.1 5,6 5,4.9A3,3 0 0,1 8,1.9A3,3 0 0,1 8.9,2.7C9.8,2.2 10.9,1.9 12,1.9M12,9A3,3 0 0,0 9,12A3,3 0 0,0 15,12A3,3 0 0,0 15,12A3,3 0 0,0 12,9Z"/></svg>
+            <svg class="svg-icon-lg" viewBox="0 0 24 24" fill="#e53935"><path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"/></svg>
+        </div>
+        
+        <h1>¡Feliz 21 de Septiembre!</h1>
+        <div class="subtitulo">Para mi novio Franco</div>
+
+        <div class="mensaje-principal">
+            <p>¡Feliz Día del Amor y de la Primavera, mi amor!</p>
+            <p>Hoy es 21 de septiembre y no podía dejar pasar este día sin regalarte algo hecho especialmente para ti. Aunque dicen que hoy se regalan flores amarillas, yo quise regalarte este pequeño detalle que nunca se va a marchitar, para recordarte lo mucho que ilumina mi vida tu presencia.</p>
+            <p>Gracias por ser mi novio, mi compañero de vida en todo este tiempo a tu lado y también mi mejor amigo. Te adoro con todo mi corazón.</p>
+        </div>
+
+        <div class="jardin-titulo">
+            <svg class="svg-icon" viewBox="0 0 24 24" fill="#fbc02d"><path d="M12,2L14.39,8.26L21,9.27L16.25,13.88L17.37,20.47L12,17.37L6.63,20.47L7.75,13.88L3,9.27L9.61,8.26L12,2Z"/></svg>
+            Toca cada botoncito para abrir un regalito:
+        </div>
+        
+        <div class="botones-flores">
+            <button class="btn-flor" onclick="mostrarMensaje(1)">
+                <svg class="svg-icon" viewBox="0 0 24 24" fill="#fbc02d"><path d="M12,2A3,3 0 0,1 15,5A3,3 0 0,1 14.9,5.8C15.8,5.3 16.9,5 18,5A3,3 0 0,1 21,8A3,3 0 0,1 20.2,8.9C20.7,9.8 21,10.9 21,12A3,3 0 0,1 18,15A3,3 0 0,1 17.1,14.9C17.6,15.8 17.9,16.9 17.9,18A3,3 0 0,1 14.9,21A3,3 0 0,1 14,20.2C13.1,20.7 12,21 10.9,21A3,3 0 0,1 7.9,18A3,3 0 0,1 8,17.1C7.1,17.6 6,17.9 4.9,17.9A3,3 0 0,1 1.9,14.9A3,3 0 0,1 2.7,14C2.2,13.1 1.9,12 1.9,10.9A3,3 0 0,1 4.9,7.9A3,3 0 0,1 5.8,8C5.3,7.1 5,6 5,4.9A3,3 0 0,1 8,1.9A3,3 0 0,1 8.9,2.7C9.8,2.2 10.9,1.9 12,1.9M12,9A3,3 0 0,0 9,12A3,3 0 0,0 15,12A3,3 0 0,0 12,9Z"/></svg>
+                ¿Por qué amarillo?
+            </button>
+            <button class="btn-flor" onclick="mostrarMensaje(2)">
+                <svg class="svg-icon" viewBox="0 0 24 24" fill="#e53935"><path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"/></svg>
+                Amor y Amistad
+            </button>
+            <button class="btn-flor" onclick="mostrarMensaje(3)">
+                <svg class="svg-icon" viewBox="0 0 24 24" fill="#fbc02d"><path d="M12,2L14.39,8.26L21,9.27L16.25,13.88L17.37,20.47L12,17.37L6.63,20.47L7.75,13.88L3,9.27L9.61,8.26L12,2Z"/></svg>
+                Mi Deseo
+            </button>
+        </div>
+
+        <div class="caja-revelada" id="cajaMensaje">
+            <i>Selecciona un botoncito de arriba para leer el mensaje...</i>
+        </div>
+
+        <!-- REPRODUCTOR DE MÚSICA PENSADO PARA CELULAR -->
+        <div class="reproductor-box">
+            <p>
+                <svg class="svg-icon" viewBox="0 0 24 24" fill="#f57f17"><path d="M12,3V13.55A4,4 0 0,0 10,13A4,4 0 0,0 6,17A4,4 0 0,0 10,21A4,4 0 0,0 14,17V7H18V3H12Z"/></svg>
+                Para Ti...
+            </p>
+            <audio id="miAudio" loop preload="auto">
+                <source src="musica.mp3" type="audio/mpeg">
+            </audio>
+            <button class="btn-play" id="btnAudio" onclick="toggleMusica()">
+                ▶ Reproducir Música
+            </button>
+            <span class="estado-musica" id="estadoAudio">Toca el botón para escuchar</span>
+        </div>
+
+        <button class="btn-ramo" onclick="abrirRamo()">
+            <svg class="svg-icon" viewBox="0 0 24 24" fill="#ffffff"><path d="M12,2A3,3 0 0,1 15,5A3,3 0 0,1 14.9,5.8C15.8,5.3 16.9,5 18,5A3,3 0 0,1 21,8A3,3 0 0,1 20.2,8.9C20.7,9.8 21,10.9 21,12A3,3 0 0,1 18,15A3,3 0 0,1 17.1,14.9C17.6,15.8 17.9,16.9 17.9,18A3,3 0 0,1 14.9,21A3,3 0 0,1 14,20.2C13.1,20.7 12,21 10.9,21A3,3 0 0,1 7.9,18A3,3 0 0,1 8,17.1C7.1,17.6 6,17.9 4.9,17.9A3,3 0 0,1 1.9,14.9A3,3 0 0,1 2.7,14C2.2,13.1 1.9,12 1.9,10.9A3,3 0 0,1 4.9,7.9A3,3 0 0,1 5.8,8C5.3,7.1 5,6 5,4.9A3,3 0 0,1 8,1.9A3,3 0 0,1 8.9,2.7C9.8,2.2 10.9,1.9 12,1.9M12,9A3,3 0 0,0 9,12A3,3 0 0,0 15,12A3,3 0 0,0 12,9Z"/></svg>
+            ¡Recibir mi Ramo de Flores!
+        </button>
+    </div>
+
+    <!-- VENTANA EMERGENTE -->
+    <div class="modal-overlay" id="modalRamo">
+        <div class="modal-content" id="modalContent">
+            <svg class="ramo-svg" viewBox="0 0 24 24">
+                <path fill="#e53935" d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"/>
+                <path fill="#fbc02d" d="M12,2A3,3 0 0,1 15,5A3,3 0 0,1 14.9,5.8C15.8,5.3 16.9,5 18,5A3,3 0 0,1 21,8A3,3 0 0,1 20.2,8.9C20.7,9.8 21,10.9 21,12A3,3 0 0,1 18,15A3,3 0 0,1 17.1,14.9C17.6,15.8 17.9,16.9 17.9,18A3,3 0 0,1 14.9,21A3,3 0 0,1 14,20.2C13.1,20.7 12,21 10.9,21A3,3 0 0,1 7.9,18A3,3 0 0,1 8,17.1C7.1,17.6 6,17.9 4.9,17.9A3,3 0 0,1 1.9,14.9A3,3 0 0,1 2.7,14C2.2,13.1 1.9,12 1.9,10.9A3,3 0 0,1 4.9,7.9A3,3 0 0,1 5.8,8C5.3,7.1 5,6 5,4.9A3,3 0 0,1 8,1.9A3,3 0 0,1 8.9,2.7C9.8,2.2 10.9,1.9 12,1.9M12,9A3,3 0 0,0 9,12A3,3 0 0,0 15,12A3,3 0 0,0 12,9Z"/>
+            </svg>
+            
+            <!-- TÍTULO CON ÍCONOS SVG VECTORIALES EN LUGAR DE EMOJIS DE TEXTO -->
+            <h2>
+                ¡Tu Ramo de Flores! 
+                <svg class="svg-icon" viewBox="0 0 24 24" fill="#fbc02d"><path d="M12,2A3,3 0 0,1 15,5A3,3 0 0,1 14.9,5.8C15.8,5.3 16.9,5 18,5A3,3 0 0,1 21,8A3,3 0 0,1 20.2,8.9C20.7,9.8 21,10.9 21,12A3,3 0 0,1 18,15A3,3 0 0,1 17.1,14.9C17.6,15.8 17.9,16.9 17.9,18A3,3 0 0,1 14.9,21A3,3 0 0,1 14,20.2C13.1,20.7 12,21 10.9,21A3,3 0 0,1 7.9,18A3,3 0 0,1 8,17.1C7.1,17.6 6,17.9 4.9,17.9A3,3 0 0,1 1.9,14.9A3,3 0 0,1 2.7,14C2.2,13.1 1.9,12 1.9,10.9A3,3 0 0,1 4.9,7.9A3,3 0 0,1 5.8,8C5.3,7.1 5,6 5,4.9A3,3 0 0,1 8,1.9A3,3 0 0,1 8.9,2.7C9.8,2.2 10.9,1.9 12,1.9M12,9A3,3 0 0,0 9,12A3,3 0 0,0 15,12A3,3 0 0,0 12,9Z"/></svg>
+                <svg class="svg-icon" viewBox="0 0 24 24" fill="#e53935"><path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"/></svg>
+            </h2>
+            
+            <div id="contenidoModalOriginal">
+                <p>Este ramo amarillo es para recordarte lo especial que eres para mí y cuánto te amo. ¡Feliz 21 de septiembre mi amor!</p>
+                <button class="btn-cerrar" onclick="guardarEnCorazon()">Guardar en el corazón</button>
+            </div>
+
+            <!-- VISTA DE ANIMACIÓN AL GUARDAR EN EL CORAZÓN -->
+            <div class="animacion-guardar" id="animacionGuardando">
+                <svg class="corazon-gigante" viewBox="0 0 24 24" fill="#e53935">
+                    <path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"/>
+                </svg>
+                <div class="texto-guardando">¡Guardado en el corazón con éxito! ❤️</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var mensajes = {
+            1: "<b>Te doy estas flores amarillas</b> porque simbolizan la luz, la alegría y la calidez que trajiste a mi vida desde el día en que llegaste. ¡Eres la luz que ilumina mi camino!",
+            2: "<b>Mi novio y mi mejor amigo:</b> Gracias por cada risa, por apoyarme en todo y por hacer que cada momento juntos sea único e inolvidable, gracias por todo mi amor...!!",
+            3: "<b>Mi deseo para ti:</b> Que esta primavera te traiga muchisimas bendiciones, que cumplas cada una de tus metas y que sigamos caminando juntos por mucho tiempo más. ¡Te amo mi amor!"
+        };
+
+        function mostrarMensaje(num) {
+            var caja = document.getElementById('cajaMensaje');
+            if (caja && mensajes[num]) {
+                caja.innerHTML = mensajes[num];
+            }
+        }
+
+        function abrirRamo() {
+            var modal = document.getElementById('modalRamo');
+            var original = document.getElementById('contenidoModalOriginal');
+            var animacion = document.getElementById('animacionGuardando');
+            
+            if (original) original.style.display = 'block';
+            if (animacion) animacion.style.display = 'none';
+            if (modal) modal.style.display = 'flex';
+        }
+
+        function guardarEnCorazon() {
+            var original = document.getElementById('contenidoModalOriginal');
+            var animacion = document.getElementById('animacionGuardando');
+            
+            if (original) original.style.display = 'none';
+            if (animacion) animacion.style.display = 'flex';
+
+            // Cierra la ventana emergente tras ver la animación por 2.2 segundos
+            setTimeout(function() {
+                var modal = document.getElementById('modalRamo');
+                if (modal) modal.style.display = 'none';
+            }, 2200);
+        }
+
+        function cerrarRamo() {
+            var modal = document.getElementById('modalRamo');
+            if (modal) modal.style.display = 'none';
+        }
+
+        // CONTROL DE MÚSICA COMPATIBLE CON CELULARES
+        function toggleMusica() {
+            var audio = document.getElementById('miAudio');
+            var btn = document.getElementById('btnAudio');
+            var estado = document.getElementById('estadoAudio');
+
+            if (audio.paused) {
+                var playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(function() {
+                        btn.innerHTML = '⏸ Pausar Música';
+                        estado.innerText = '♪ Reproduciendo...';
+                    }).catch(function(error) {
+                        estado.innerText = '⚠️ Asegúrate de incluir el archivo musica.mp3';
+                        console.log('Error de reproducción: ', error);
+                    });
+                }
+            } else {
+                audio.pause();
+                btn.innerHTML = '▶ Reproducir Música';
+                estado.innerText = 'Música pausada';
+            }
+        }
+
+        // --- CREACIÓN DINÁMICA DE LA LLUVIA DE FLORES Y CORAZONES ---
+        function crearLluvia() {
+            var contenedor = document.getElementById('lluvia-container');
+            if (!contenedor) return;
+
+            var simbolos = ['🌻', '🌼', '❤️', '💛', '✨'];
+            var cantidad = 20;
+
+            for (var i = 0; i < cantidad; i++) {
+                var elemento = document.createElement('div');
+                elemento.className = 'elemento-caida';
+                elemento.innerText = simbolos[Math.floor(Math.random() * simbolos.length)];
+                
+                // Posiciones y tiempos aleatorios para un efecto natural
+                elemento.style.left = Math.random() * 100 + 'vw';
+                elemento.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                elemento.style.animationDelay = (Math.random() * 5) + 's';
+                elemento.style.fontSize = (Math.random() * 12 + 16) + 'px';
+
+                contenedor.appendChild(elemento);
+            }
+        }
+
+        window.onload = function() {
+            crearLluvia();
+        };
+    </script>
+</body>
+</html>
